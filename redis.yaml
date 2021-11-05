@@ -1,0 +1,81 @@
+Parameters:
+  KeyPairName:
+    Type: String
+    Description: Enter the name of the .pem key for SSH access to machine
+  InstanceTypeParameter:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.medium
+      - t2.large
+      - t2.2xlarge
+    Description: Select the machine size.
+
+Resources:
+  ApplicationSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow traffic from everywhere
+      SecurityGroupIngress:
+        IpProtocol: -1
+        CidrIp: 0.0.0.0/0
+
+  redis01:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0ba0ce0c11eb723a1
+      InstanceType:
+        Ref: InstanceTypeParameter
+      SecurityGroupIds: 
+        - !Ref ApplicationSG
+      KeyName: !Ref KeyPairName
+      Tags:
+        - Key: "Name"
+          Value: redis01
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+
+          # install PRE-REQUISITES
+          #--------------------------#
+          yum update -y
+          yum install make gcc tcl wget -y
+          yum groupinstall 'Development Tools' -y
+          #-------------------------------------------------------------------------------------------------#
+
+          
+          # install Redis v6.0.14
+          #--------------------------#
+          wget https://download.redis.io/releases/redis-6.0.14.tar.gz -P /home/ec2-user/
+          tar xzf /home/ec2-user/redis-6.0.14.tar.gz -C /home/ec2-user/
+          cd /home/ec2-user/redis-6.0.14
+          make MALLOC=libc > /home/ec2-user/malloc_logs.txt
+
+
+          # edit conf file
+          #--------------------------#
+          sed -i '69s/.*/bind 0.0.0.0/' /home/ec2-user/redis-6.0.14/redis.conf
+          ######## additional commands required
+          ######## additional commands required
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # allow redis commands 
+          #--------------------------#
+          cp /home/ec2-user/redis-6.0.14/src/redis-server /usr/local/bin/
+          cp /home/ec2-user/redis-6.0.14/src/redis-cli /usr/local/bin/
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # start Redis 
+          #--------------------------#
+          /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
+          #-------------------------------------------------------------------------------------------------#
+
+
+
+
+
+
+
