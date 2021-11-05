@@ -74,3 +74,273 @@ Resources:
           /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
           #-------------------------------------------------------------------------------------------------#
 
+
+  redis02:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0ba0ce0c11eb723a1
+      InstanceType:
+        Ref: InstanceTypeParameter
+      SecurityGroupIds: 
+        - !Ref ApplicationSG
+      KeyName: !Ref KeyPairName
+      Tags:
+        - Key: "Name"
+          Value: redis02
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+
+          # install PRE-REQUISITES
+          #--------------------------#
+          yum update -y
+          yum install make gcc tcl wget -y
+          yum groupinstall 'Development Tools' -y
+          #-------------------------------------------------------------------------------------------------#
+
+          
+          # install Redis v6.0.14
+          #--------------------------#
+          wget https://download.redis.io/releases/redis-6.0.14.tar.gz -P /home/ec2-user/
+          tar xzf /home/ec2-user/redis-6.0.14.tar.gz -C /home/ec2-user/
+          cd /home/ec2-user/redis-6.0.14
+          make MALLOC=libc > /home/ec2-user/malloc_logs.txt
+
+
+          # edit conf file
+          #--------------------------#
+          sed -i '68s/.*/bind 0.0.0.0/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1227s/.*/cluster-enabled yes/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1235s/.*/cluster-config-file nodes-6379.conf/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1241s/.*/cluster-node-timeout 15000/' /home/ec2-user/redis-6.0.14/redis.conf
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # allow redis commands 
+          #--------------------------#
+          cp /home/ec2-user/redis-6.0.14/src/redis-server /usr/local/bin/
+          cp /home/ec2-user/redis-6.0.14/src/redis-cli /usr/local/bin/
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # start Redis 
+          #--------------------------#
+          /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
+          #-------------------------------------------------------------------------------------------------#
+
+  redis03:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0ba0ce0c11eb723a1
+      InstanceType:
+        Ref: InstanceTypeParameter
+      SecurityGroupIds: 
+        - !Ref ApplicationSG
+      KeyName: !Ref KeyPairName
+      Tags:
+        - Key: "Name"
+          Value: redis03
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+
+          # install PRE-REQUISITES
+          #--------------------------#
+          yum update -y
+          yum install make gcc tcl wget -y
+          yum groupinstall 'Development Tools' -y
+          #-------------------------------------------------------------------------------------------------#
+
+          
+          # install Redis v6.0.14
+          #--------------------------#
+          wget https://download.redis.io/releases/redis-6.0.14.tar.gz -P /home/ec2-user/
+          tar xzf /home/ec2-user/redis-6.0.14.tar.gz -C /home/ec2-user/
+          cd /home/ec2-user/redis-6.0.14
+          make MALLOC=libc > /home/ec2-user/malloc_logs.txt
+
+
+          # edit conf file
+          #--------------------------#
+          sed -i '68s/.*/bind 0.0.0.0/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1227s/.*/cluster-enabled yes/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1235s/.*/cluster-config-file nodes-6379.conf/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1241s/.*/cluster-node-timeout 15000/' /home/ec2-user/redis-6.0.14/redis.conf
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # allow redis commands 
+          #--------------------------#
+          cp /home/ec2-user/redis-6.0.14/src/redis-server /usr/local/bin/
+          cp /home/ec2-user/redis-6.0.14/src/redis-cli /usr/local/bin/
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # start Redis 
+          #--------------------------#
+          /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
+          #-------------------------------------------------------------------------------------------------#
+
+
+  redis04:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0ba0ce0c11eb723a1
+      InstanceType:
+        Ref: InstanceTypeParameter
+      SecurityGroupIds: 
+        - !Ref ApplicationSG
+      KeyName: !Ref KeyPairName
+      Tags:
+        - Key: "Name"
+          Value: redis04
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+
+          # install PRE-REQUISITES
+          #--------------------------#
+          yum update -y
+          yum install make gcc tcl wget -y
+          yum groupinstall 'Development Tools' -y
+          #-------------------------------------------------------------------------------------------------#
+
+          
+          # install Redis v6.0.14
+          #--------------------------#
+          wget https://download.redis.io/releases/redis-6.0.14.tar.gz -P /home/ec2-user/
+          tar xzf /home/ec2-user/redis-6.0.14.tar.gz -C /home/ec2-user/
+          cd /home/ec2-user/redis-6.0.14
+          make MALLOC=libc > /home/ec2-user/malloc_logs.txt
+
+
+          # edit conf file
+          #--------------------------#
+          sed -i '68s/.*/bind 0.0.0.0/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1227s/.*/cluster-enabled yes/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1235s/.*/cluster-config-file nodes-6379.conf/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1241s/.*/cluster-node-timeout 15000/' /home/ec2-user/redis-6.0.14/redis.conf
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # allow redis commands 
+          #--------------------------#
+          cp /home/ec2-user/redis-6.0.14/src/redis-server /usr/local/bin/
+          cp /home/ec2-user/redis-6.0.14/src/redis-cli /usr/local/bin/
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # start Redis 
+          #--------------------------#
+          /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
+          #-------------------------------------------------------------------------------------------------#
+
+
+  redis05:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0ba0ce0c11eb723a1
+      InstanceType:
+        Ref: InstanceTypeParameter
+      SecurityGroupIds: 
+        - !Ref ApplicationSG
+      KeyName: !Ref KeyPairName
+      Tags:
+        - Key: "Name"
+          Value: redis05
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+
+          # install PRE-REQUISITES
+          #--------------------------#
+          yum update -y
+          yum install make gcc tcl wget -y
+          yum groupinstall 'Development Tools' -y
+          #-------------------------------------------------------------------------------------------------#
+
+          
+          # install Redis v6.0.14
+          #--------------------------#
+          wget https://download.redis.io/releases/redis-6.0.14.tar.gz -P /home/ec2-user/
+          tar xzf /home/ec2-user/redis-6.0.14.tar.gz -C /home/ec2-user/
+          cd /home/ec2-user/redis-6.0.14
+          make MALLOC=libc > /home/ec2-user/malloc_logs.txt
+
+
+          # edit conf file
+          #--------------------------#
+          sed -i '68s/.*/bind 0.0.0.0/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1227s/.*/cluster-enabled yes/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1235s/.*/cluster-config-file nodes-6379.conf/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1241s/.*/cluster-node-timeout 15000/' /home/ec2-user/redis-6.0.14/redis.conf
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # allow redis commands 
+          #--------------------------#
+          cp /home/ec2-user/redis-6.0.14/src/redis-server /usr/local/bin/
+          cp /home/ec2-user/redis-6.0.14/src/redis-cli /usr/local/bin/
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # start Redis 
+          #--------------------------#
+          /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
+          #-------------------------------------------------------------------------------------------------#
+
+
+  redis06:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0ba0ce0c11eb723a1
+      InstanceType:
+        Ref: InstanceTypeParameter
+      SecurityGroupIds: 
+        - !Ref ApplicationSG
+      KeyName: !Ref KeyPairName
+      Tags:
+        - Key: "Name"
+          Value: redis06
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+
+          # install PRE-REQUISITES
+          #--------------------------#
+          yum update -y
+          yum install make gcc tcl wget -y
+          yum groupinstall 'Development Tools' -y
+          #-------------------------------------------------------------------------------------------------#
+
+          
+          # install Redis v6.0.14
+          #--------------------------#
+          wget https://download.redis.io/releases/redis-6.0.14.tar.gz -P /home/ec2-user/
+          tar xzf /home/ec2-user/redis-6.0.14.tar.gz -C /home/ec2-user/
+          cd /home/ec2-user/redis-6.0.14
+          make MALLOC=libc > /home/ec2-user/malloc_logs.txt
+
+
+          # edit conf file
+          #--------------------------#
+          sed -i '68s/.*/bind 0.0.0.0/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1227s/.*/cluster-enabled yes/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1235s/.*/cluster-config-file nodes-6379.conf/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1241s/.*/cluster-node-timeout 15000/' /home/ec2-user/redis-6.0.14/redis.conf
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # allow redis commands 
+          #--------------------------#
+          cp /home/ec2-user/redis-6.0.14/src/redis-server /usr/local/bin/
+          cp /home/ec2-user/redis-6.0.14/src/redis-cli /usr/local/bin/
+          #-------------------------------------------------------------------------------------------------#
+
+
+          # start Redis 
+          #--------------------------#
+          /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
+          #-------------------------------------------------------------------------------------------------#
+
+
