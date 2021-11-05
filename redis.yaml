@@ -74,7 +74,6 @@ Resources:
           /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
           #-------------------------------------------------------------------------------------------------#
 
-
   redis02:
     Type: AWS::EC2::Instance
     Properties:
@@ -181,7 +180,6 @@ Resources:
           /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
           #-------------------------------------------------------------------------------------------------#
 
-
   redis04:
     Type: AWS::EC2::Instance
     Properties:
@@ -234,7 +232,6 @@ Resources:
           #--------------------------#
           /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
           #-------------------------------------------------------------------------------------------------#
-
 
   redis05:
     Type: AWS::EC2::Instance
@@ -289,7 +286,6 @@ Resources:
           /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
           #-------------------------------------------------------------------------------------------------#
 
-
   redis06:
     Type: AWS::EC2::Instance
     Properties:
@@ -342,5 +338,63 @@ Resources:
           #--------------------------#
           /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
           #-------------------------------------------------------------------------------------------------#
+
+
+  temp:
+    Type: AWS::EC2::Instance
+    DependsOn:
+      - redis01
+      - redis02
+      - redis03
+      - redis04
+      - redis05
+      - redis06
+    Properties:
+      ImageId: ami-0ba0ce0c11eb723a1
+      InstanceType:
+        Ref: InstanceTypeParameter
+      SecurityGroupIds: 
+        - !Ref ApplicationSG
+      KeyName: !Ref KeyPairName
+      Tags:
+        - Key: "Name"
+          Value: temp_machine
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+
+          # install PRE-REQUISITES
+          #--------------------------#
+          yum update -y
+          yum install make gcc tcl wget -y
+          yum groupinstall 'Development Tools' -y
+          #-------------------------------------------------------------------------------------------------#
+
+          
+          # install Redis v6.0.14
+          #--------------------------#
+          wget https://download.redis.io/releases/redis-6.0.14.tar.gz -P /home/ec2-user/
+          tar xzf /home/ec2-user/redis-6.0.14.tar.gz -C /home/ec2-user/
+          cd /home/ec2-user/redis-6.0.14
+          make MALLOC=libc > /home/ec2-user/malloc_logs.txt
+
+          # allow redis commands 
+          #--------------------------#
+          cp /home/ec2-user/redis-6.0.14/src/redis-server /usr/local/bin/
+          cp /home/ec2-user/redis-6.0.14/src/redis-cli /usr/local/bin/
+          #-------------------------------------------------------------------------------------------------#
+
+          cat > /home/ec2-user/file.txt <<EOF
+          redis-cli --cluster create \
+          ${redis01.PublicIp}:6379 \
+          ${redis02.PublicIp}:6379 \
+          ${redis03.PublicIp}:6379 \
+          ${redis04.PublicIp}:6379 \
+          ${redis05.PublicIp}:6379 \
+          ${redis06.PublicIp}:6379 --cluster-replicas 1 --cluster-yes
+          EOF
+
+
+
 
 
