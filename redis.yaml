@@ -55,9 +55,10 @@ Resources:
 
           # edit conf file
           #--------------------------#
-          sed -i '69s/.*/bind 0.0.0.0/' /home/ec2-user/redis-6.0.14/redis.conf
-          ######## additional commands required
-          ######## additional commands required
+          sed -i '68s/.*/bind 0.0.0.0/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1227s/.*/cluster-enabled yes/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1235s/.*/cluster-config-file nodes-6379.conf/' /home/ec2-user/redis-6.0.14/redis.conf
+          sed -i '1241s/.*/cluster-node-timeout 15000/' /home/ec2-user/redis-6.0.14/redis.conf
           #-------------------------------------------------------------------------------------------------#
 
 
@@ -72,10 +73,4 @@ Resources:
           #--------------------------#
           /home/ec2-user/redis-6.0.14/src/redis-server /home/ec2-user/redis-6.0.14/redis.conf
           #-------------------------------------------------------------------------------------------------#
-
-
-
-
-
-
 
